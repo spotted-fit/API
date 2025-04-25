@@ -1,1 +1,51 @@
-# API
+# 🏋️ Spotted — Social Fitness App Backend
+
+---
+
+## 🚀 Tech Stack
+
+| Technology  | Purpose                  |
+|-------------|---------------------------|
+| Kotlin      | Backend language          |
+| Ktor        | Web framework             |
+| Exposed     | ORM for PostgreSQL        |
+| PostgreSQL  | Database                  |
+| JWT         | Authentication            |
+| Bcrypt      | Password hashing          |
+| Swagger UI  | API documentation         |
+
+---
+
+## 📦 Features
+
+- 🔐 User registration & login
+- 📸 Uploading posts (2 photos + emoji + optional description)
+- 🔎 Search by username
+- ❤️ Like/unlike posts
+- 💬 Comment on posts
+- 👤 User profile with post previews & friend count
+- 🔐 Protected endpoints with JWT
+
+---
+
+## 📄 API Documentation
+
+- 👉 [Open Swagger UI]()
+- All endpoints, parameters, and response formats are documented
+
+![Swagger Screenshot](docs/swagger_preview.png)
+
+---
+
+## 🗃️ Database Schema
+
+👉 [View on dbdiagram.io](https://dbdiagram.io/d/Spotted-Database-Schema-680bbdbd1ca52373f563b588)
+![DB Diagram](docs/db_schema.png)
+
+---
+
+## 📌 TODO
+
+- [ ] Feed (friends' posts)
+- [ ] Friend requests and friendship system
+- [ ] Smart username search
