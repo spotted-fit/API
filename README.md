@@ -30,7 +30,7 @@
 
 ## 📄 API Documentation
 
-- 👉 [Open Swagger UI]()
+- 👉 [Open Swagger UI](https://super-duper-gym.github.io/API/)
 - All endpoints, parameters, and response formats are documented
 
 ![Swagger Screenshot](docs/swagger_preview.png)
