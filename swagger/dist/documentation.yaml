@@ -1,0 +1,288 @@
+openapi: 3.0.1
+info:
+  title: Spotted API
+  version: 1.0.0
+
+paths:
+  /register:
+    post:
+      summary: Register new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                username:
+                  type: string
+              required: [email, password, username]
+      responses:
+        '200':
+          description: Successfully registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '409':
+          description: Conflict. Email/username taken
+
+  /login:
+    post:
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required: [email, password]
+      responses:
+        '200':
+          description: Successfully logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Unauthorized. Wrong email or password
+
+  /posts:
+    post:
+      summary: Create a post
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                photo1:
+                  type: string
+                  format: binary
+                photo2:
+                  type: string
+                  format: binary
+                emoji:
+                  type: string
+                description:
+                  type: string
+              required: [photo1, photo2]
+      responses:
+        '200':
+          description: Post created
+        '400':
+          description: Bad request. There should be 2 photos
+        '401':
+          description: Unauthorized
+
+  /posts/{id}:
+    get:
+      summary: Get post by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Post found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: integer }
+                  userId: { type: integer }
+                  photo1: { type: string }
+                  photo2: { type: string, nullable: true }
+                  text: { type: string, nullable: true }
+                  emoji: { type: string, nullable: true }
+                  createdAt: { type: integer }
+                  likes: { type: integer }
+                  isLikedByMe: { type: boolean }
+                  comments:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer }
+                        userId: { type: integer }
+                        text: { type: string }
+                        createdAt: { type: integer }
+        '404':
+          description: Post not found
+        '401':
+          description: Unauthorized
+        '400':
+          description: BadRequest. Invalid post ID
+
+  /posts/{id}/like:
+    post:
+      summary: Like a post
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Post liked
+        '400':
+          description: BadRequest. Invalid post ID
+        '401':
+          description: Unauthorized
+
+    delete:
+      summary: Remove like from post
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Like removed
+        '400':
+          description: BadRequest. Invalid post ID
+        '401':
+          description: Unauthorized
+
+  /posts/{id}/comment:
+    post:
+      summary: Add comment to post
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+              required: [text]
+      responses:
+        '200':
+          description: Comment added
+        '400':
+          description: BadRequest. Invalid post ID
+        '401':
+          description: Unauthorized
+
+  /posts/{id}/comments:
+    get:
+      summary: Get comments for post
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Comments list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: { type: integer }
+                    userId: { type: integer }
+                    text: { type: string }
+                    createdAt: { type: integer }
+        '404':
+          description: BadRequest. Invalid post ID
+        '401':
+          description: Unauthorized
+  /profile/{id}:
+    get:
+      summary: Get user profile
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Profile found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: integer }
+                  username: { type: string }
+                  avatar: { type: string, nullable: true }
+                  friendsCount: { type: integer }
+                  posts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer }
+                        photo1: { type: string }
+                        photo2: { type: string, nullable: true }
+                        text: { type: string, nullable: true }
+                        emoji: { type: string, nullable: true }
+                        createdAt: { type: integer }
+                        likes: { type: integer }
+                        isLikedByMe: { type: boolean }
+        '404':
+          description: User not found
+        '401':
+          description: Unauthorized
+        '400':
+          description: BadRequest. Invalid ID
+
+
+  /search:
+    get:
+      summary: Search users by username
+      parameters:
+        - in: query
+          name: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Matching users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: { type: integer }
+                    username: { type: string }
+                    avatar: { type: string, nullable: true }
+        '400':
+          description: BadRequest. Query parameter 'q' is missing"
