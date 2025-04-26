@@ -78,6 +78,21 @@ application {
     mainClass.set("MainKt")
 }
 
+tasks.register<Jar>("buildFatJar") {
+    archiveBaseName.set("API")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes["Main-Class"] = "MainKt" // Entry point of app
+    }
+    from(sourceSets.main.get().output)
+
+    // Include all dependencies
+    dependsOn(configurations.runtimeClasspath)
+    from({
+        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+    })
+}
+
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
