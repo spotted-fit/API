@@ -44,6 +44,16 @@
 
 ---
 
+## 🌱 Environment Variables
+
+To run the project set up .env file with the following variables:
+```env
+DB_PASSWORD=your_password
+JWT_SECRET=your_jwt_secret
+```
+
+---
+
 ## 📌 TODO
 
 - [ ] Feed (friends' posts)
