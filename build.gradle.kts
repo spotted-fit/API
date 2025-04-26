@@ -89,3 +89,11 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         jvmTarget = "17"
     }
 }
+
+tasks.jar {
+    manifest {
+        attributes(
+            "Main-Class" to "MainKt"
+        )
+    }
+}
