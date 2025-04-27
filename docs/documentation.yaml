@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: Spotted API
-  version: 1.0.3
+  version: 1.0.1
 
 paths:
   /register:
@@ -24,7 +24,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RegisterResponse'
+                type: object
+                properties:
+                  result: { type: string, example: "ok" }
+                  response:
+                    type: object
+                    properties:
+                      token: { type: string }
 
   /login:
     post:
@@ -38,14 +44,21 @@ paths:
               properties:
                 email: { type: string }
                 password: { type: string }
-              required: [email, password]
+                username: { type: string }
+              required: [email, password, username]
       responses:
         '200':
           description: Login result
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginResponse'
+                type: object
+                properties:
+                  result: { type: string, example: "ok" }
+                  response:
+                    type: object
+                    properties:
+                      token: { type: string }
 
   /posts:
     post:
@@ -68,7 +81,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EmptyOkResponse'
+                $ref: '#/components/schemas/OkResponse'
 
   /posts/{id}:
     get:
@@ -85,7 +98,30 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PostResponse'
+                type: object
+                properties:
+                  result: { type: string, example: "ok" }
+                  response:
+                    type: object
+                    properties:
+                      id: { type: integer }
+                      userId: { type: integer }
+                      photo1: { type: string }
+                      photo2: { type: string, nullable: true }
+                      text: { type: string, nullable: true }
+                      emoji: { type: string, nullable: true }
+                      createdAt: { type: integer }
+                      likes: { type: integer }
+                      isLikedByMe: { type: boolean }
+                      comments:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id: { type: integer }
+                            userId: { type: integer }
+                            text: { type: string }
+                            createdAt: { type: integer }
 
   /posts/{id}/like:
     post:
@@ -102,7 +138,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EmptyOkResponse'
+                $ref: '#/components/schemas/OkResponse'
 
     delete:
       summary: Remove like from post
@@ -118,7 +154,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EmptyOkResponse'
+                $ref: '#/components/schemas/OkResponse'
 
   /posts/{id}/comment:
     post:
@@ -144,7 +180,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EmptyOkResponse'
+                $ref: '#/components/schemas/OkResponse'
 
   /posts/{id}/comments:
     get:
@@ -161,7 +197,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CommentsResponse'
+                type: object
+                properties:
+                  result: { type: string, example: "ok" }
+                  response:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer }
+                        userId: { type: integer }
+                        text: { type: string }
+                        createdAt: { type: integer }
 
   /profile/{id}:
     get:
@@ -178,7 +225,29 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProfileResponse'
+                type: object
+                properties:
+                  result: { type: string, example: "ok" }
+                  response:
+                    type: object
+                    properties:
+                      id: { type: integer }
+                      username: { type: string }
+                      avatar: { type: string, nullable: true }
+                      friendsCount: { type: integer }
+                      posts:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id: { type: integer }
+                            photo1: { type: string }
+                            photo2: { type: string, nullable: true }
+                            text: { type: string, nullable: true }
+                            emoji: { type: string, nullable: true }
+                            createdAt: { type: integer }
+                            likes: { type: integer }
+                            isLikedByMe: { type: boolean }
 
   /search:
     get:
@@ -195,115 +264,34 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SearchUsersResponse'
+                type: object
+                properties:
+                  result: { type: string, example: "ok" }
+                  response:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer }
+                        username: { type: string }
+                        avatar: { type: string, nullable: true }
 
 components:
   schemas:
-    RegisterResponse:
+    OkResponse:
       type: object
       properties:
-        result: { type: string, example: "ok" }
+        result:
+          type: string
+          example: "ok"
         response:
           type: object
-          properties:
-            token: { type: string }
-
-    LoginResponse:
-      type: object
-      properties:
-        result: { type: string, example: "ok" }
-        response:
-          type: object
-          properties:
-            token: { type: string }
-
-    EmptyOkResponse:
-      type: object
-      properties:
-        result: { type: string, example: "ok" }
-        response:
-          type: object
-
-    PostResponse:
-      type: object
-      properties:
-        result: { type: string, example: "ok" }
-        response:
-          type: object
-          properties:
-            id: { type: integer }
-            userId: { type: integer }
-            photo1: { type: string }
-            photo2: { type: string, nullable: true }
-            text: { type: string, nullable: true }
-            emoji: { type: string, nullable: true }
-            createdAt: { type: integer }
-            likes: { type: integer }
-            isLikedByMe: { type: boolean }
-            comments:
-              type: array
-              items:
-                type: object
-                properties:
-                  id: { type: integer }
-                  userId: { type: integer }
-                  text: { type: string }
-                  createdAt: { type: integer }
-
-    CommentsResponse:
-      type: object
-      properties:
-        result: { type: string, example: "ok" }
-        response:
-          type: array
-          items:
-            type: object
-            properties:
-              id: { type: integer }
-              userId: { type: integer }
-              text: { type: string }
-              createdAt: { type: integer }
-
-    ProfileResponse:
-      type: object
-      properties:
-        result: { type: string, example: "ok" }
-        response:
-          type: object
-          properties:
-            id: { type: integer }
-            username: { type: string }
-            avatar: { type: string, nullable: true }
-            friendsCount: { type: integer }
-            posts:
-              type: array
-              items:
-                type: object
-                properties:
-                  id: { type: integer }
-                  photo1: { type: string }
-                  photo2: { type: string, nullable: true }
-                  text: { type: string, nullable: true }
-                  emoji: { type: string, nullable: true }
-                  createdAt: { type: integer }
-                  likes: { type: integer }
-                  isLikedByMe: { type: boolean }
-
-    SearchUsersResponse:
-      type: object
-      properties:
-        result: { type: string, example: "ok" }
-        response:
-          type: array
-          items:
-            type: object
-            properties:
-              id: { type: integer }
-              username: { type: string }
-              avatar: { type: string, nullable: true }
 
     ErrorResponse:
       type: object
       properties:
-        result: { type: string, example: "error" }
-        message: { type: string }
+        result:
+          type: string
+          example: "error"
+        message:
+          type: string
