@@ -120,25 +120,25 @@ fun Route.postRoutes() {
         post("/posts/{id}/like") {
             val userId = call.userIdOrThrow()
             val postId = call.parameters["id"]?.toIntOrNull()
-                ?: return@post call.respond(ErrorResponse(message = "There should be 2 photos"))
+                ?: return@post call.respond(ErrorResponse(message = "Post not found"))
 
             LikeDao.likePost(userId, postId)
-            call.respond(HttpStatusCode.OK)
+            call.respond(OkResponse(response = buildJsonObject {}))
         }
 
         delete("/posts/{id}/like") {
             val userId = call.userIdOrThrow()
             val postId = call.parameters["id"]?.toIntOrNull()
-                ?: return@delete call.respond(ErrorResponse(message = "There should be 2 photos"))
+                ?: return@delete call.respond(ErrorResponse(message = "Post not found"))
 
             LikeDao.unlikePost(userId, postId)
-            call.respond(HttpStatusCode.OK)
+            call.respond(OkResponse(response = buildJsonObject {}))
         }
 
         post("/posts/{id}/comment") {
             val userId = call.userIdOrThrow()
             val postId = call.parameters["id"]?.toIntOrNull()
-                ?: return@post call.respond(ErrorResponse(message = "There should be 2 photos"))
+                ?: return@post call.respond(ErrorResponse(message = "Post not found"))
             val body = call.receive<CommentRequest>()
 
             CommentDao.addComment(postId, userId, body.text)
@@ -147,7 +147,7 @@ fun Route.postRoutes() {
 
         get("/posts/{id}/comments") {
             val postId = call.parameters["id"]?.toIntOrNull()
-                ?: return@get call.respond(ErrorResponse(message = "Invalid post ID"))
+                ?: return@get call.respond(ErrorResponse(message = "Post not found"))
 
             val comments = CommentDao.getComments(postId)
             call.respond(OkResponse(response = Json.encodeToJsonElement(ListSerializer(Comment.serializer()), comments)))

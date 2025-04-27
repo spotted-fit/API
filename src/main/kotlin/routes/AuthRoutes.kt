@@ -3,9 +3,11 @@ package routes
 import db.dao.UserDao
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.*
 import io.ktor.server.routing.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
+import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import models.*
@@ -15,6 +17,7 @@ import security.JwtService
 fun Route.authRoutes() {
     post("/register") {
         val body = call.receive<RegisterRequest>()
+
         val existing = UserDao.findByEmail(body.email)
         if (existing != null) {
             call.respond(ErrorResponse(message = "User with this email already exists"))
@@ -40,10 +43,29 @@ fun Route.authRoutes() {
 
     post("/login") {
         val body = call.receive<LoginRequest>()
-        val user = UserDao.findByEmail(body.email)
-        if (user == null || !BCrypt.checkpw(body.password, user.passwordHash)) {
-            call.respond(ErrorResponse(message = "Wrong email or password"))
+
+        val email = body.email?.trim()
+        val username = body.username?.trim()
+        val password = body.password.trim()
+
+        if ((email.isNullOrEmpty() && username.isNullOrEmpty()) || password.isEmpty()) {
+            call.respond(ErrorResponse(message = "Provide either email or username, and password"))
             return@post
+        }
+        val user = if (!email.isNullOrEmpty()) {
+            UserDao.findByEmail(email)
+        } else {
+            UserDao.findByUsername(username!!)
+        }
+        if (user == null || !BCrypt.checkpw(body.password, user.passwordHash)) {
+            call.respond(ErrorResponse(message = "Wrong email, username or password"))
+            return@post
+        }
+        if (!email.isNullOrEmpty() && !username.isNullOrEmpty()) {
+            if (user.username != username || user.email != email) {
+                call.respond(ErrorResponse(message = "Email and username of the account do not match"))
+                return@post
+            }
         }
 
         val token = JwtService.generateToken(user.id)

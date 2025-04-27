@@ -22,6 +22,7 @@ dependencies {
     // Ktor Core
     implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
 
     // Auth
     implementation("io.ktor:ktor-server-auth:$ktorVersion")
@@ -52,27 +53,6 @@ dependencies {
     // Dotenv
     implementation("io.github.cdimascio:dotenv-kotlin:$dotenvVersion")
 }
-
-
-//dependencies {
-//    implementation("io.ktor:ktor-server-core-jvm:2.3.7")
-//    implementation("io.ktor:ktor-server-netty-jvm:2.3.7")
-//    implementation("io.ktor:ktor-server-content-negotiation:2.3.7")
-//    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
-//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-//    implementation("ch.qos.logback:logback-classic:1.5.13")
-//    implementation("org.jetbrains.exposed:exposed-core:0.45.0")
-//    implementation("org.jetbrains.exposed:exposed-dao:0.45.0")
-//    implementation("org.jetbrains.exposed:exposed-jdbc:0.45.0")
-//    implementation("org.postgresql:postgresql:42.7.2")
-//    implementation("org.mindrot:jbcrypt:0.4")
-//    implementation("com.auth0:java-jwt:4.4.0")
-//    implementation("io.ktor:ktor-server-auth:2.3.7")
-//    implementation("io.ktor:ktor-server-auth-jwt:2.3.7")
-//    implementation("io.ktor:ktor-server-content-negotiation:2.3.7")
-//    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
-//    implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
-//}
 
 application {
     mainClass.set("MainKt")

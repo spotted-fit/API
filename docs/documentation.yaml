@@ -275,7 +275,101 @@ paths:
                         id: { type: integer }
                         username: { type: string }
                         avatar: { type: string, nullable: true }
+  /friends/request:
+    post:
+      summary: Send a friend request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                toId:
+                  type: integer
+              required: [ toId ]
+      responses:
+        '200':
+          description: Send friend request result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result: { type: string, example: "ok" }
+                  response:
+                    type: object
 
+  /friends/respond:
+    post:
+      summary: Respond to a friend request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                requestId:
+                  type: integer
+                accepted:
+                  type: boolean
+              required: [ requestId, accepted ]
+      responses:
+        '200':
+          description: Respond to friend request result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result: { type: string, example: "ok" }
+                  response:
+                    type: object
+                    properties:
+                      response:
+                        type: string
+                        example: "accepted"
+
+  /friends/requests:
+    get:
+      summary: Get incoming friend requests
+      responses:
+        '200':
+          description: Get incoming requests result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result: { type: string, example: "ok" }
+                  response:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer }
+                        username: { type: string }
+
+  /friends:
+    get:
+      summary: Get list of friends
+      responses:
+        '200':
+          description: Get friends list result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result: { type: string, example: "ok" }
+                  response:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer }
+                        username: { type: string }
 components:
   schemas:
     OkResponse:
@@ -286,7 +380,6 @@ components:
           example: "ok"
         response:
           type: object
-
     ErrorResponse:
       type: object
       properties:
