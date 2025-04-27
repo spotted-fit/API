@@ -1,0 +1,7 @@
+.gradle/
+.idea/
+build/
+*.log
+*.tmp
+.env-example
+/uploads/
