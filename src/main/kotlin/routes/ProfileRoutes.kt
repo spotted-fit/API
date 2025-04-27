@@ -6,7 +6,10 @@ import db.tables.FriendRequestTable
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.http.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.encodeToJsonElement
+import models.ErrorResponse
+import models.OkResponse
 import models.ProfilePost
 import models.ProfileResponse
 import org.jetbrains.exposed.sql.and
@@ -18,13 +21,13 @@ fun Route.profileRoutes() {
     get("/profile/{id}") {
         val id = call.parameters["id"]?.toIntOrNull()
         if (id == null) {
-            call.respond(HttpStatusCode.BadRequest, "Invalid id")
+            call.respond(ErrorResponse(message = "Invalid Id"))
             return@get
         }
 
         val user = UserDao.findById(id)
         if (user == null) {
-            call.respond(HttpStatusCode.NotFound, "User not found")
+            call.respond(ErrorResponse(message = "User not found"))
             return@get
         }
 
@@ -49,11 +52,13 @@ fun Route.profileRoutes() {
         }
 
         call.respond(
-            ProfileResponse(
-                id = user.id,
-                avatar = user.avatarPath,
-                friendsCount = friendsCount.toInt(),
-                posts = posts
+            OkResponse(
+                response = Json.encodeToJsonElement(ProfileResponse(
+                    id = user.id,
+                    avatar = user.avatarPath,
+                    friendsCount = friendsCount.toInt(),
+                    posts = posts
+                ))
             )
         )
     }

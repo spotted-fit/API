@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: Spotted API
-  version: 1.0.0
+  version: 1.0.3
 
 paths:
   /register:
@@ -14,25 +14,17 @@ paths:
             schema:
               type: object
               properties:
-                email:
-                  type: string
-                password:
-                  type: string
-                username:
-                  type: string
+                email: { type: string }
+                password: { type: string }
+                username: { type: string }
               required: [email, password, username]
       responses:
         '200':
-          description: Successfully registered
+          description: Registration result
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  token:
-                    type: string
-        '409':
-          description: Conflict. Email/username taken
+                $ref: '#/components/schemas/RegisterResponse'
 
   /login:
     post:
@@ -44,23 +36,16 @@ paths:
             schema:
               type: object
               properties:
-                email:
-                  type: string
-                password:
-                  type: string
+                email: { type: string }
+                password: { type: string }
               required: [email, password]
       responses:
         '200':
-          description: Successfully logged in
+          description: Login result
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  token:
-                    type: string
-        '401':
-          description: Unauthorized. Wrong email or password
+                $ref: '#/components/schemas/LoginResponse'
 
   /posts:
     post:
@@ -72,24 +57,18 @@ paths:
             schema:
               type: object
               properties:
-                photo1:
-                  type: string
-                  format: binary
-                photo2:
-                  type: string
-                  format: binary
-                emoji:
-                  type: string
-                description:
-                  type: string
+                photo1: { type: string, format: binary }
+                photo2: { type: string, format: binary }
+                emoji: { type: string }
+                description: { type: string }
               required: [photo1, photo2]
       responses:
         '200':
-          description: Post created
-        '400':
-          description: Bad request. There should be 2 photos
-        '401':
-          description: Unauthorized
+          description: Post creation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyOkResponse'
 
   /posts/{id}:
     get:
@@ -102,36 +81,11 @@ paths:
             type: integer
       responses:
         '200':
-          description: Post found
+          description: Post retrieval result
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id: { type: integer }
-                  userId: { type: integer }
-                  photo1: { type: string }
-                  photo2: { type: string, nullable: true }
-                  text: { type: string, nullable: true }
-                  emoji: { type: string, nullable: true }
-                  createdAt: { type: integer }
-                  likes: { type: integer }
-                  isLikedByMe: { type: boolean }
-                  comments:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id: { type: integer }
-                        userId: { type: integer }
-                        text: { type: string }
-                        createdAt: { type: integer }
-        '404':
-          description: Post not found
-        '401':
-          description: Unauthorized
-        '400':
-          description: BadRequest. Invalid post ID
+                $ref: '#/components/schemas/PostResponse'
 
   /posts/{id}/like:
     post:
@@ -144,11 +98,11 @@ paths:
             type: integer
       responses:
         '200':
-          description: Post liked
-        '400':
-          description: BadRequest. Invalid post ID
-        '401':
-          description: Unauthorized
+          description: Like post result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyOkResponse'
 
     delete:
       summary: Remove like from post
@@ -160,11 +114,11 @@ paths:
             type: integer
       responses:
         '200':
-          description: Like removed
-        '400':
-          description: BadRequest. Invalid post ID
-        '401':
-          description: Unauthorized
+          description: Remove like result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyOkResponse'
 
   /posts/{id}/comment:
     post:
@@ -182,16 +136,15 @@ paths:
             schema:
               type: object
               properties:
-                text:
-                  type: string
+                text: { type: string }
               required: [text]
       responses:
         '200':
-          description: Comment added
-        '400':
-          description: BadRequest. Invalid post ID
-        '401':
-          description: Unauthorized
+          description: Add comment result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyOkResponse'
 
   /posts/{id}/comments:
     get:
@@ -204,22 +157,12 @@ paths:
             type: integer
       responses:
         '200':
-          description: Comments list
+          description: Comments list result
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id: { type: integer }
-                    userId: { type: integer }
-                    text: { type: string }
-                    createdAt: { type: integer }
-        '404':
-          description: BadRequest. Invalid post ID
-        '401':
-          description: Unauthorized
+                $ref: '#/components/schemas/CommentsResponse'
+
   /profile/{id}:
     get:
       summary: Get user profile
@@ -231,36 +174,11 @@ paths:
             type: integer
       responses:
         '200':
-          description: Profile found
+          description: Profile retrieval result
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id: { type: integer }
-                  username: { type: string }
-                  avatar: { type: string, nullable: true }
-                  friendsCount: { type: integer }
-                  posts:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id: { type: integer }
-                        photo1: { type: string }
-                        photo2: { type: string, nullable: true }
-                        text: { type: string, nullable: true }
-                        emoji: { type: string, nullable: true }
-                        createdAt: { type: integer }
-                        likes: { type: integer }
-                        isLikedByMe: { type: boolean }
-        '404':
-          description: User not found
-        '401':
-          description: Unauthorized
-        '400':
-          description: BadRequest. Invalid ID
-
+                $ref: '#/components/schemas/ProfileResponse'
 
   /search:
     get:
@@ -273,16 +191,119 @@ paths:
             type: string
       responses:
         '200':
-          description: Matching users
+          description: Search users result
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id: { type: integer }
-                    username: { type: string }
-                    avatar: { type: string, nullable: true }
-        '400':
-          description: BadRequest. Query parameter 'q' is missing"
+                $ref: '#/components/schemas/SearchUsersResponse'
+
+components:
+  schemas:
+    RegisterResponse:
+      type: object
+      properties:
+        result: { type: string, example: "ok" }
+        response:
+          type: object
+          properties:
+            token: { type: string }
+
+    LoginResponse:
+      type: object
+      properties:
+        result: { type: string, example: "ok" }
+        response:
+          type: object
+          properties:
+            token: { type: string }
+
+    EmptyOkResponse:
+      type: object
+      properties:
+        result: { type: string, example: "ok" }
+        response:
+          type: object
+
+    PostResponse:
+      type: object
+      properties:
+        result: { type: string, example: "ok" }
+        response:
+          type: object
+          properties:
+            id: { type: integer }
+            userId: { type: integer }
+            photo1: { type: string }
+            photo2: { type: string, nullable: true }
+            text: { type: string, nullable: true }
+            emoji: { type: string, nullable: true }
+            createdAt: { type: integer }
+            likes: { type: integer }
+            isLikedByMe: { type: boolean }
+            comments:
+              type: array
+              items:
+                type: object
+                properties:
+                  id: { type: integer }
+                  userId: { type: integer }
+                  text: { type: string }
+                  createdAt: { type: integer }
+
+    CommentsResponse:
+      type: object
+      properties:
+        result: { type: string, example: "ok" }
+        response:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: integer }
+              userId: { type: integer }
+              text: { type: string }
+              createdAt: { type: integer }
+
+    ProfileResponse:
+      type: object
+      properties:
+        result: { type: string, example: "ok" }
+        response:
+          type: object
+          properties:
+            id: { type: integer }
+            username: { type: string }
+            avatar: { type: string, nullable: true }
+            friendsCount: { type: integer }
+            posts:
+              type: array
+              items:
+                type: object
+                properties:
+                  id: { type: integer }
+                  photo1: { type: string }
+                  photo2: { type: string, nullable: true }
+                  text: { type: string, nullable: true }
+                  emoji: { type: string, nullable: true }
+                  createdAt: { type: integer }
+                  likes: { type: integer }
+                  isLikedByMe: { type: boolean }
+
+    SearchUsersResponse:
+      type: object
+      properties:
+        result: { type: string, example: "ok" }
+        response:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: integer }
+              username: { type: string }
+              avatar: { type: string, nullable: true }
+
+    ErrorResponse:
+      type: object
+      properties:
+        result: { type: string, example: "error" }
+        message: { type: string }

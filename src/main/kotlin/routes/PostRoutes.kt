@@ -8,15 +8,16 @@ import db.tables.UserTable
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.server.auth.jwt.*
 import io.ktor.http.content.*
-import models.CommentRequest
-import models.GetPostResponse
-import models.Post
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.put
+import models.*
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -63,7 +64,7 @@ fun Route.postRoutes() {
             }
 
             if (photo1Bytes == null || photo2Bytes == null) {
-                call.respond(HttpStatusCode.BadRequest, "There should be 2 photos")
+                call.respond(ErrorResponse(message = "There should be 2 photos"))
                 return@post
             }
 
@@ -81,33 +82,37 @@ fun Route.postRoutes() {
                 emoji = emoji
             )
 
-            call.respond(HttpStatusCode.Created, mapOf("postId" to postId))
+            call.respond(OkResponse(response = buildJsonObject { put("postId", postId) }))
         }
 
         get("/posts/{id}") {
             val userId = call.userIdOrThrow()
             val postId = call.parameters["id"]?.toIntOrNull()
-                ?: return@get call.respond(HttpStatusCode.BadRequest, "Invalid post ID")
+                ?: return@get call.respond(ErrorResponse(message = "Invalid post ID"))
 
             val post = PostDao.findById(postId)
-                ?: return@get call.respond(HttpStatusCode.NotFound, "Post not found")
+                ?: return@get call.respond(ErrorResponse(message = "Post not found"))
 
             val comments = CommentDao.getComments(postId)
             val likesCount = LikeDao.countForPost(postId)
             val isLiked = LikeDao.isLikedByUser(userId, postId)
 
             call.respond(
-                GetPostResponse(
-                    id = post.id,
-                    userId = post.userId,
-                    photo1 = post.photo1,
-                    photo2 = post.photo2,
-                    text = post.text,
-                    emoji = post.emoji,
-                    createdAt = post.createdAt,
-                    likes = likesCount,
-                    isLikedByMe = isLiked,
-                    comments = comments
+                OkResponse(
+                    response = Json.encodeToJsonElement(
+                        GetPostResponse(
+                            id = post.id,
+                            userId = post.userId,
+                            photo1 = post.photo1,
+                            photo2 = post.photo2,
+                            text = post.text,
+                            emoji = post.emoji,
+                            createdAt = post.createdAt,
+                            likes = likesCount,
+                            isLikedByMe = isLiked,
+                            comments = comments
+                        )
+                    )
                 )
             )
         }
@@ -115,7 +120,7 @@ fun Route.postRoutes() {
         post("/posts/{id}/like") {
             val userId = call.userIdOrThrow()
             val postId = call.parameters["id"]?.toIntOrNull()
-                ?: return@post call.respond(HttpStatusCode.BadRequest, "Invalid post ID")
+                ?: return@post call.respond(ErrorResponse(message = "There should be 2 photos"))
 
             LikeDao.likePost(userId, postId)
             call.respond(HttpStatusCode.OK)
@@ -124,7 +129,7 @@ fun Route.postRoutes() {
         delete("/posts/{id}/like") {
             val userId = call.userIdOrThrow()
             val postId = call.parameters["id"]?.toIntOrNull()
-                ?: return@delete call.respond(HttpStatusCode.BadRequest, "Invalid post id")
+                ?: return@delete call.respond(ErrorResponse(message = "There should be 2 photos"))
 
             LikeDao.unlikePost(userId, postId)
             call.respond(HttpStatusCode.OK)
@@ -133,19 +138,19 @@ fun Route.postRoutes() {
         post("/posts/{id}/comment") {
             val userId = call.userIdOrThrow()
             val postId = call.parameters["id"]?.toIntOrNull()
-                ?: return@post call.respond(HttpStatusCode.BadRequest, "Invalid post id")
+                ?: return@post call.respond(ErrorResponse(message = "There should be 2 photos"))
             val body = call.receive<CommentRequest>()
 
             CommentDao.addComment(postId, userId, body.text)
-            call.respond(HttpStatusCode.OK)
+            call.respond(OkResponse(response = buildJsonObject {}))
         }
 
         get("/posts/{id}/comments") {
             val postId = call.parameters["id"]?.toIntOrNull()
-                ?: return@get call.respond(HttpStatusCode.BadRequest, "Invalid post id")
+                ?: return@get call.respond(ErrorResponse(message = "Invalid post ID"))
 
             val comments = CommentDao.getComments(postId)
-            call.respond(comments)
+            call.respond(OkResponse(response = Json.encodeToJsonElement(ListSerializer(Comment.serializer()), comments)))
         }
     }
 }

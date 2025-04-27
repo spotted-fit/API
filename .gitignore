@@ -3,3 +3,5 @@
 .idea/
 .env
 /uploads/
+/resources/
+/src/main/kotlin/routes/DebugRoutes.kt
