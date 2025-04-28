@@ -249,6 +249,36 @@ paths:
                             likes: { type: integer }
                             isLikedByMe: { type: boolean }
 
+  /profile/{id}/posts:
+    get:
+      summary: Get posts of a specific user
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User posts retrieval result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result: { type: string, example: "ok" }
+                  response:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        postId: { type: integer }
+                        photo1: { type: string }
+                        photo2: { type: string }
+                        text: { type: string }
+                        emoji: { type: string }
+                        createdAt: { type: string, format: date-time }
+
   /search:
     get:
       summary: Search users by username
@@ -370,6 +400,31 @@ paths:
                       properties:
                         id: { type: integer }
                         username: { type: string }
+
+  /feed:
+    get:
+      summary: Get recent posts from friends
+      responses:
+        '200':
+          description: Friends posts feed result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result: { type: string, example: "ok" }
+                  response:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        postId: { type: integer }
+                        photo1: { type: string }
+                        photo2: { type: string }
+                        text: { type: string }
+                        emoji: { type: string }
+                        createdAt: { type: string, format: date-time }
+
 components:
   schemas:
     OkResponse:

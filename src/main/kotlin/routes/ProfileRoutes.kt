@@ -6,8 +6,7 @@ import db.tables.FriendRequestTable
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.*
 import models.ErrorResponse
 import models.OkResponse
 import models.ProfilePost
@@ -16,6 +15,7 @@ import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import utils.buildFullPhotoUrl
 
 fun Route.profileRoutes() {
     get("/profile/{id}") {
@@ -62,4 +62,28 @@ fun Route.profileRoutes() {
             )
         )
     }
+
+    get("/profile/{id}/posts") {
+        val userId = call.parameters["id"]?.toIntOrNull()
+        if (userId == null) {
+            call.respond(ErrorResponse(message = "Invalid id"))
+            return@get
+        }
+
+        val posts = PostDao.findByUserId(userId)
+
+        call.respond(OkResponse(response = buildJsonArray {
+            posts.forEach { post ->
+                add(buildJsonObject {
+                    put("postId", post.id)
+                    put("photo1", buildFullPhotoUrl(post.photo1))
+                    put("photo2", buildFullPhotoUrl(post.photo2))
+                    put("text", post.text ?: "")
+                    put("emoji", post.emoji ?: "")
+                    put("createdAt", post.createdAt.toString())
+                })
+            }
+        }))
+    }
+
 }

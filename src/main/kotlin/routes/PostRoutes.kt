@@ -5,7 +5,6 @@ import db.dao.PostDao
 import db.dao.LikeDao
 import db.tables.PhotoTable
 import db.tables.UserTable
-import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
@@ -21,6 +20,10 @@ import models.*
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.transactions.transaction
+import storage.S3Config
+import storage.S3Uploader
+import utils.buildFullPhotoUrl
+import utils.generateRandom32
 import utils.userIdOrThrow
 import java.io.File
 
@@ -32,9 +35,7 @@ fun Route.postRoutes() {
             val multipart = call.receiveMultipart()
 
             var photo1Bytes: ByteArray? = null
-            var photo1Name: String? = null
             var photo2Bytes: ByteArray? = null
-            var photo2Name: String? = null
             var text: String? = null
             var emoji: String? = null
 
@@ -47,15 +48,12 @@ fun Route.postRoutes() {
                         }
                     }
                     is PartData.FileItem -> {
-                        val name = part.originalFileName ?: "upload.jpg"
                         val bytes = part.streamProvider().readBytes()
 
                         if (photo1Bytes == null) {
                             photo1Bytes = bytes
-                            photo1Name = name
                         } else if (photo2Bytes == null) {
                             photo2Bytes = bytes
-                            photo2Name = name
                         }
                     }
                     else -> {}
@@ -68,8 +66,13 @@ fun Route.postRoutes() {
                 return@post
             }
 
-            val path1 = savePhoto(photo1Name!!, photo1Bytes!!)
-            val path2 = savePhoto(photo2Name!!, photo2Bytes!!)
+            val uploader = S3Uploader(S3Config.s3Client, S3Config.bucketName)
+
+            val randomDir1 = generateRandom32() + ".png"
+            val randomDir2 = generateRandom32() + ".png"
+
+            val path1 = uploader.uploadImage(photo1Bytes!!, randomDir1)
+            val path2 = uploader.uploadImage(photo2Bytes!!, randomDir2)
 
             val photo1Id = savePhotoToDb(userId, path1)
             val photo2Id = savePhotoToDb(userId, path2)
@@ -103,8 +106,8 @@ fun Route.postRoutes() {
                         GetPostResponse(
                             id = post.id,
                             userId = post.userId,
-                            photo1 = post.photo1,
-                            photo2 = post.photo2,
+                            photo1 = buildFullPhotoUrl(post.photo1),
+                            photo2 = buildFullPhotoUrl(post.photo1),
                             text = post.text,
                             emoji = post.emoji,
                             createdAt = post.createdAt,

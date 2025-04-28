@@ -3,7 +3,6 @@ package routes
 import db.dao.FriendRequestDao
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -12,7 +11,6 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import models.*
-import org.jetbrains.exposed.exceptions.ExposedSQLException
 import utils.userIdOrThrow
 
 fun Route.friendshipRoutes() {
@@ -55,7 +53,7 @@ fun Route.friendshipRoutes() {
                 )
             }
 
-            get("/") {
+            get("") {
                 val userId = call.userIdOrThrow()
 
                 val friends = FriendRequestDao.getFriends(userId)

@@ -52,6 +52,9 @@ dependencies {
 
     // Dotenv
     implementation("io.github.cdimascio:dotenv-kotlin:$dotenvVersion")
+
+    // Aws
+    implementation("software.amazon.awssdk:s3:2.25.20")
 }
 
 application {
