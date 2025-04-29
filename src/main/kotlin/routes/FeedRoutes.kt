@@ -33,6 +33,7 @@ fun Route.feedRoutes() {
                         put("postId", post.id)
                         put("photo1Url", buildFullPhotoUrl(post.photo1))
                         put("photo2Url", buildFullPhotoUrl(post.photo2))
+                        put("duration", post.duration)
                         put("text", post.text ?: "")
                         put("emoji", post.emoji ?: "")
                         put("createdAt", post.createdAt.toString())

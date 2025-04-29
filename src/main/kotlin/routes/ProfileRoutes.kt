@@ -34,10 +34,11 @@ fun Route.profileRoutes() {
         val posts = PostDao.findByUserId(user.id).map {
             ProfilePost(
                 id = it.id,
-                photo1 = it.photo1,
-                photo2 = it.photo2,
+                photo1 = buildFullPhotoUrl(it.photo1),
+                photo2 = buildFullPhotoUrl(it.photo2),
                 emoji = it.emoji,
                 text = it.text,
+                duration = it.duration,
                 createdAt = it.createdAt
             )
         }
@@ -78,6 +79,7 @@ fun Route.profileRoutes() {
                     put("postId", post.id)
                     put("photo1", buildFullPhotoUrl(post.photo1))
                     put("photo2", buildFullPhotoUrl(post.photo2))
+                    put("duration", post.duration)
                     put("text", post.text ?: "")
                     put("emoji", post.emoji ?: "")
                     put("createdAt", post.createdAt.toString())

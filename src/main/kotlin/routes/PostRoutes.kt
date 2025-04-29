@@ -36,6 +36,7 @@ fun Route.postRoutes() {
 
             var photo1Bytes: ByteArray? = null
             var photo2Bytes: ByteArray? = null
+            var duration: Int = 0
             var text: String? = null
             var emoji: String? = null
 
@@ -45,6 +46,7 @@ fun Route.postRoutes() {
                         when (part.name) {
                             "text" -> text = part.value
                             "emoji" -> emoji = part.value
+                            "duration" -> duration = part.value.toInt()
                         }
                     }
                     is PartData.FileItem -> {
@@ -81,6 +83,7 @@ fun Route.postRoutes() {
                 userId = userId,
                 photo1Id = photo1Id,
                 photo2Id = photo2Id,
+                duration = duration,
                 text = text,
                 emoji = emoji
             )
@@ -108,6 +111,7 @@ fun Route.postRoutes() {
                             userId = post.userId,
                             photo1 = buildFullPhotoUrl(post.photo1),
                             photo2 = buildFullPhotoUrl(post.photo1),
+                            duration = post.duration,
                             text = post.text,
                             emoji = post.emoji,
                             createdAt = post.createdAt,
@@ -156,16 +160,6 @@ fun Route.postRoutes() {
             call.respond(OkResponse(response = Json.encodeToJsonElement(ListSerializer(Comment.serializer()), comments)))
         }
     }
-}
-
-private fun savePhoto(filename: String, bytes: ByteArray): String {
-    val uploadDir = File("uploads")
-    if (!uploadDir.exists()) uploadDir.mkdirs()
-
-    val file = File(uploadDir, System.currentTimeMillis().toString() + "_" + filename)
-    file.writeBytes(bytes)
-
-    return "/uploads/${file.name}"
 }
 
 private fun savePhotoToDb(userId: Int, path: String): Int {
