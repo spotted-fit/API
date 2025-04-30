@@ -109,6 +109,7 @@ fun Route.postRoutes() {
                         GetPostResponse(
                             id = post.id,
                             userId = post.userId,
+                            username = post.username,
                             photo1 = buildFullPhotoUrl(post.photo1),
                             photo2 = buildFullPhotoUrl(post.photo2),
                             text = post.text,

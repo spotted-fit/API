@@ -2,6 +2,7 @@ package db.dao
 
 import db.DatabaseFactory.dbQuery
 import db.tables.CommentTable
+import db.tables.UserTable
 import models.Comment
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.insert
@@ -18,12 +19,14 @@ object CommentDao {
     }
 
     suspend fun getComments(postId: Int): List<Comment> = dbQuery {
-        CommentTable.select { CommentTable.post eq postId }
+        (CommentTable innerJoin UserTable)
+            .select { CommentTable.post eq postId }
             .orderBy(CommentTable.createdAt to SortOrder.ASC)
             .map {
                 Comment(
                     id = it[CommentTable.id].value,
                     userId = it[CommentTable.user].value,
+                    username = it[UserTable.username],
                     text = it[CommentTable.text],
                     createdAt = it[CommentTable.createdAt]
                 )

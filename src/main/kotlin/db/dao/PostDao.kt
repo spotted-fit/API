@@ -15,13 +15,16 @@ object PostDao {
         val p1 = PhotoTable.alias("p1")
         val p2 = PhotoTable.alias("p2")
 
-        PostTable.leftJoin(p1, { PostTable.photo1 }, { p1[PhotoTable.id] })
+        PostTable
+            .innerJoin(UserTable, { PostTable.user }, { UserTable.id })
+            .leftJoin(p1, { PostTable.photo1 }, { p1[PhotoTable.id] })
             .leftJoin(p2, { PostTable.photo2 }, { p2[PhotoTable.id] })
             .select { PostTable.id eq postId }
             .mapNotNull { row ->
                 Post(
                     id = row[PostTable.id].value,
                     userId = row[PostTable.user].value,
+                    username = row[UserTable.username],
                     photo1 = row[p1[PhotoTable.path]],
                     photo2 = row[p2[PhotoTable.path]],
                     text = row[PostTable.text],
@@ -37,6 +40,7 @@ object PostDao {
         val p2 = PhotoTable.alias("p2")
 
         PostTable
+            .innerJoin(UserTable, { PostTable.user }, { UserTable.id })
             .join(p1, JoinType.INNER, PostTable.photo1, p1[PhotoTable.id])
             .join(p2, JoinType.LEFT, PostTable.photo2, p2[PhotoTable.id])
             .select { PostTable.user eq userId }
@@ -44,6 +48,7 @@ object PostDao {
                 Post(
                     id = row[PostTable.id].value,
                     userId = row[PostTable.user].value,
+                    username = row[UserTable.username],
                     photo1 = row[p1[PhotoTable.path]],
                     photo2 = row[p2[PhotoTable.path]],
                     text = row[PostTable.text],
@@ -60,6 +65,7 @@ object PostDao {
         val p2 = PhotoTable.alias("p2")
 
         PostTable
+            .innerJoin(UserTable, { PostTable.user }, { UserTable.id })
             .join(p1, JoinType.INNER, PostTable.photo1, p1[PhotoTable.id])
             .join(p2, JoinType.LEFT, PostTable.photo2, p2[PhotoTable.id])
             .select {
@@ -72,6 +78,31 @@ object PostDao {
                 Post(
                     id = row[PostTable.id].value,
                     userId = row[PostTable.user].value,
+                    username = row[UserTable.username],
+                    photo1 = row[p1[PhotoTable.path]],
+                    photo2 = row[p2[PhotoTable.path]],
+                    text = row[PostTable.text],
+                    emoji = row[PostTable.emoji],
+                    createdAt = row[PostTable.createdAt]
+                )
+            }
+    }
+
+    suspend fun getAllPosts(): List<Post> = dbQuery {
+        val p1 = PhotoTable.alias("p1")
+        val p2 = PhotoTable.alias("p2")
+
+        PostTable
+            .innerJoin(UserTable, { PostTable.user }, { UserTable.id })
+            .join(p1, JoinType.INNER, PostTable.photo1, p1[PhotoTable.id])
+            .join(p2, JoinType.LEFT, PostTable.photo2, p2[PhotoTable.id])
+            .selectAll()
+            .orderBy(PostTable.createdAt to SortOrder.DESC)
+            .map { row ->
+                Post(
+                    id = row[PostTable.id].value,
+                    userId = row[PostTable.user].value,
+                    username = row[UserTable.username],
                     photo1 = row[p1[PhotoTable.path]],
                     photo2 = row[p2[PhotoTable.path]],
                     text = row[PostTable.text],
