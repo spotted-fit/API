@@ -17,6 +17,5 @@ data class ProfilePost(
     val photo2: String,
     val emoji: String?,
     val text: String?,
-    val duration: Int,
     val createdAt: Long
 )

@@ -111,7 +111,6 @@ fun Route.postRoutes() {
                             userId = post.userId,
                             photo1 = buildFullPhotoUrl(post.photo1),
                             photo2 = buildFullPhotoUrl(post.photo1),
-                            duration = post.duration,
                             text = post.text,
                             emoji = post.emoji,
                             createdAt = post.createdAt,
