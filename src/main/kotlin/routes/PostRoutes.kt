@@ -124,6 +124,39 @@ fun Route.postRoutes() {
             )
         }
 
+        authenticate {
+            delete("/posts/{id}") {
+                val userId = call.userIdOrThrow()
+                val postId = call.parameters["id"]?.toIntOrNull()
+
+                if (postId == null) {
+                    call.respond(ErrorResponse(message = "Invalid post id"))
+                    return@delete
+                }
+
+                val post = PostDao.findById(postId)
+                if (post == null) {
+                    call.respond(ErrorResponse(message = "Post not found"))
+                    return@delete
+                }
+
+                if (post.userId != userId) {
+                    call.respond(ErrorResponse(message = "You are not allowed to delete this post"))
+                    return@delete
+                }
+
+                val uploader = S3Uploader(S3Config.s3Client, S3Config.bucketName)
+
+                uploader.deleteImage(post.photo1)
+                uploader.deleteImage(post.photo2)
+
+                PostDao.delete(postId)
+
+                call.respond(OkResponse(response = buildJsonObject {}))
+            }
+        }
+
+
         post("/posts/{id}/like") {
             val userId = call.userIdOrThrow()
             val postId = call.parameters["id"]?.toIntOrNull()

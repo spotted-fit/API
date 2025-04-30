@@ -2,6 +2,7 @@ package storage
 
 import software.amazon.awssdk.core.sync.RequestBody
 import software.amazon.awssdk.services.s3.S3Client
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest
 import software.amazon.awssdk.services.s3.model.PutObjectRequest
 
 class S3Uploader(
@@ -21,5 +22,15 @@ class S3Uploader(
         s3Client.putObject(request, RequestBody.fromBytes(photoBytes))
 
         return objectKey
+    }
+
+    fun deleteImage(imagePath: String) {
+
+        val request = DeleteObjectRequest.builder()
+            .bucket(bucketName)
+            .key(imagePath)
+            .build()
+
+        s3Client.deleteObject(request)
     }
 }

@@ -7,6 +7,7 @@ import db.tables.UserTable
 import models.Post
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.insertAndGetId
 
 
@@ -101,5 +102,9 @@ object PostDao {
             it[PostTable.emoji] = emoji
             it[PostTable.createdAt] = System.currentTimeMillis()
         }.value
+    }
+
+    suspend fun delete(postId: Int) = dbQuery {
+        PostTable.deleteWhere { PostTable.id eq postId }
     }
 }
