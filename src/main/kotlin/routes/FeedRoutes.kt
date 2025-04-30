@@ -1,7 +1,6 @@
 package routes
 
 import db.dao.CommentDao
-import db.dao.FriendRequestDao
 import db.dao.LikeDao
 import db.dao.PostDao
 import io.ktor.server.application.*
