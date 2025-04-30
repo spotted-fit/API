@@ -38,7 +38,6 @@ fun Route.profileRoutes() {
                 photo2 = buildFullPhotoUrl(it.photo2),
                 emoji = it.emoji,
                 text = it.text,
-                duration = it.duration,
                 createdAt = it.createdAt
             )
         }
@@ -56,6 +55,7 @@ fun Route.profileRoutes() {
             OkResponse(
                 response = Json.encodeToJsonElement(ProfileResponse(
                     id = user.id,
+                    username = user.username,
                     avatar = user.avatarPath,
                     friendsCount = friendsCount.toInt(),
                     posts = posts
@@ -79,7 +79,6 @@ fun Route.profileRoutes() {
                     put("postId", post.id)
                     put("photo1", buildFullPhotoUrl(post.photo1))
                     put("photo2", buildFullPhotoUrl(post.photo2))
-                    put("duration", post.duration)
                     put("text", post.text ?: "")
                     put("emoji", post.emoji ?: "")
                     put("createdAt", post.createdAt.toString())

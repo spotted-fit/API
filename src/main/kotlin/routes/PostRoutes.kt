@@ -1,16 +1,16 @@
 package routes
 
 import db.dao.CommentDao
-import db.dao.PostDao
 import db.dao.LikeDao
+import db.dao.PostDao
 import db.tables.PhotoTable
 import db.tables.UserTable
+import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.http.content.*
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
@@ -25,7 +25,6 @@ import storage.S3Uploader
 import utils.buildFullPhotoUrl
 import utils.generateRandom32
 import utils.userIdOrThrow
-import java.io.File
 
 fun Route.postRoutes() {
 
@@ -109,9 +108,9 @@ fun Route.postRoutes() {
                         GetPostResponse(
                             id = post.id,
                             userId = post.userId,
+                            username = post.username,
                             photo1 = buildFullPhotoUrl(post.photo1),
-                            photo2 = buildFullPhotoUrl(post.photo1),
-                            duration = post.duration,
+                            photo2 = buildFullPhotoUrl(post.photo2),
                             text = post.text,
                             emoji = post.emoji,
                             createdAt = post.createdAt,

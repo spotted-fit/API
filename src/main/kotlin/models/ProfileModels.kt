@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ProfileResponse(
     val id: Int,
+    val username: String,
     val avatar: String?,
     val friendsCount: Int,
     val posts: List<ProfilePost>
@@ -17,6 +18,5 @@ data class ProfilePost(
     val photo2: String,
     val emoji: String?,
     val text: String?,
-    val duration: Int,
     val createdAt: Long
 )

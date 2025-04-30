@@ -6,10 +6,10 @@ import kotlinx.serialization.Serializable
 data class Post(
     val id: Int,
     val userId: Int,
+    val username: String,
     val photo1: String,
     val photo2: String,
     val text: String?,
     val emoji: String?,
-    val createdAt: Long,
-    val duration: Int
+    val createdAt: Long
 )
