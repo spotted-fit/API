@@ -72,7 +72,7 @@ object FriendRequestDao {
 
     suspend fun getFriends(userId: Int): List<UserShortDto> = dbQuery {
         (FriendRequestTable
-            .innerJoin(UserTable, { FriendRequestTable.toUser }, { UserTable.id }))  // Changed join condition
+            .innerJoin(UserTable, { FriendRequestTable.fromUser }, { UserTable.id }))
             .select {
                 (FriendRequestTable.status eq "accepted") and
                         (FriendRequestTable.fromUser eq userId)
@@ -83,17 +83,18 @@ object FriendRequestDao {
                     username = it[UserTable.username]
                 )
             } +
-            (FriendRequestTable
-                .innerJoin(UserTable, { FriendRequestTable.fromUser }, { UserTable.id }))  // Changed join condition
-                .select {
-                    (FriendRequestTable.status eq "accepted") and
-                            (FriendRequestTable.toUser eq userId)
-                }
-                .map {
-                    UserShortDto(
-                        id = it[FriendRequestTable.fromUser].value,
-                        username = it[UserTable.username]
-                    )
-                }
+                (FriendRequestTable
+                    .innerJoin(UserTable, { FriendRequestTable.toUser }, { UserTable.id }))
+                    .select {
+                        (FriendRequestTable.status eq "accepted") and
+                                (FriendRequestTable.toUser eq userId)
+                    }
+                    .map {
+                        UserShortDto(
+                            id = it[FriendRequestTable.fromUser].value,
+                            username = it[UserTable.username]
+                        )
+                    }
     }
+
 }
