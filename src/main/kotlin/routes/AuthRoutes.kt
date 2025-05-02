@@ -56,7 +56,7 @@ fun Route.authRoutes() {
             UserDao.findByUsername(username!!)
         }
         if (user == null || !BCrypt.checkpw(body.password, user.passwordHash)) {
-            call.respond(ErrorResponse(message = "Wrong email, username or password"))
+            call.respond(ErrorResponse(message = "Wrong username or password"))
             return@post
         }
         if (!email.isNullOrEmpty() && !username.isNullOrEmpty()) {
