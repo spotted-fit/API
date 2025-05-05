@@ -48,6 +48,11 @@ fun Route.authRoutes() {
             extensions = mapOf("SameSite" to "None")
         )
 
+
+        call.response.header(HttpHeaders.CacheControl, "no-store, private")
+        call.response.header(HttpHeaders.Pragma, "no-cache")
+        call.response.header(HttpHeaders.Expires, "0")
+
         call.respond(OkResponse(response = buildJsonObject { put("token", token) }))
     }
 
@@ -88,6 +93,11 @@ fun Route.authRoutes() {
             httpOnly = true,
             extensions = mapOf("SameSite" to "None")
         )
+
+
+        call.response.header(HttpHeaders.CacheControl, "no-store, private")
+        call.response.header(HttpHeaders.Pragma, "no-cache")
+        call.response.header(HttpHeaders.Expires, "0")
 
         call.respond(OkResponse(response = buildJsonObject { put("token", token) }))
     }
