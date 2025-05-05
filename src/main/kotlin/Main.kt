@@ -1,17 +1,18 @@
 import db.DatabaseFactory
 import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
-import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.http.auth.*
 import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.routing.*
+import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
 import io.ktor.server.plugins.*
+import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import models.ErrorResponse
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import routes.*
@@ -25,14 +26,20 @@ fun main() {
             json()
         }
         install(Authentication) {
-            jwt {
+            jwt("jwt-auth") {
+                realm = "spotted"
                 verifier(JwtService.verifier)
-                validate { credential ->
-                    val userId = credential.payload.getClaim("userId").asInt()
-                    if (userId != null) JWTPrincipal(credential.payload) else null
+                validate { creds ->
+                    creds.payload.getClaim("userId")?.asInt()
+                        ?.let { JWTPrincipal(creds.payload) }
+                }
+                authHeader { call ->
+                    call.request.cookies["auth_token"]
+                        ?.let { HttpAuthHeader.Single("Bearer", it) }
                 }
             }
         }
+
         install(StatusPages) {
             exception<IllegalArgumentException> { call, cause ->
                 call.respond(ErrorResponse(message = "Bad request. " + cause.message))
@@ -66,16 +73,19 @@ fun main() {
             allowHeader(HttpHeaders.Authorization)
             allowHeader(HttpHeaders.ContentType)
             allowHeader(HttpHeaders.AccessControlAllowOrigin)
+            allowHeader(HttpHeaders.Cookie)
             allowCredentials = true
             anyHost() // Allow requests from any host
         }
         routing {
             authRoutes()
-            profileRoutes()
-            postRoutes()
-            userRoutes()
-            friendshipRoutes()
-            feedRoutes()
+            authenticate("jwt-auth") {
+                profileRoutes()
+                postRoutes()
+                userRoutes()
+                friendshipRoutes()
+                feedRoutes()
+            }
 //            debugRoutes()
         }
     }.start(wait = true)
