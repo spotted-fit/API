@@ -64,10 +64,6 @@ fun main() {
             }
         }
         install(CORS) {
-            allowHost("app.spotted.fit", schemes = listOf("https"))
-
-            allowCredentials = true
-
             allowMethod(HttpMethod.Options)
             allowMethod(HttpMethod.Get)
             allowMethod(HttpMethod.Post)
@@ -78,6 +74,9 @@ fun main() {
             allowHeader(HttpHeaders.ContentType)
             allowHeader(HttpHeaders.AccessControlAllowOrigin)
             allowHeader(HttpHeaders.Cookie)
+            exposeHeader(HttpHeaders.SetCookie)
+            allowCredentials = true
+            anyHost() // Allow requests from any host - consider restricting to specific origins for better security
         }
         routing {
             authRoutes()
