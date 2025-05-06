@@ -11,8 +11,6 @@ import kotlinx.serialization.json.put
 import models.*
 import org.mindrot.jbcrypt.BCrypt
 import security.JwtService
-import io.ktor.http.CookieEncoding
-import io.ktor.http.Cookie.*
 
 fun Route.authRoutes() {
     post("/register") {
@@ -38,16 +36,6 @@ fun Route.authRoutes() {
         val hashed = BCrypt.hashpw(body.password, BCrypt.gensalt())
         val user = UserDao.create(body.email, hashed, body.username)
         val token = JwtService.generateToken(user.id)
-        call.response.cookies.append(
-            name     = "auth_token",
-            value    = token,
-            maxAge   = 365L * 24 * 60 * 60,              // 1 year
-            path     = "/",
-            secure   = true,
-            httpOnly = true,
-            extensions = mapOf("SameSite" to "None")
-        )
-
         call.respond(OkResponse(response = buildJsonObject { put("token", token) }))
     }
 
@@ -68,7 +56,7 @@ fun Route.authRoutes() {
             UserDao.findByUsername(username!!)
         }
         if (user == null || !BCrypt.checkpw(body.password, user.passwordHash)) {
-            call.respond(ErrorResponse(message = "Wrong email, username or password"))
+            call.respond(ErrorResponse(message = "Wrong username or password"))
             return@post
         }
         if (!email.isNullOrEmpty() && !username.isNullOrEmpty()) {
@@ -79,15 +67,6 @@ fun Route.authRoutes() {
         }
 
         val token = JwtService.generateToken(user.id)
-        call.response.cookies.append(
-            name     = "auth_token",
-            value    = token,
-            maxAge   = 365L * 24 * 60 * 60,              // 1 year
-            path     = "/",
-            secure   = true,
-            httpOnly = true,
-            extensions = mapOf("SameSite" to "None")
-        )
 
         call.respond(OkResponse(response = buildJsonObject { put("token", token) }))
     }
