@@ -74,9 +74,8 @@ fun main() {
             allowHeader(HttpHeaders.ContentType)
             allowHeader(HttpHeaders.AccessControlAllowOrigin)
             allowHeader(HttpHeaders.Cookie)
-            exposeHeader(HttpHeaders.SetCookie)
             allowCredentials = true
-            anyHost() // Allow requests from any host - consider restricting to specific origins for better security
+            anyHost() // Allow requests from any host
         }
         routing {
             authRoutes()
