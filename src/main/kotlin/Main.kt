@@ -20,7 +20,7 @@ import security.JwtService
 fun main() {
     DatabaseFactory.init()
 
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
+    embeddedServer(Netty, port = 8080, host = "localhost") {
         install(ContentNegotiation) {
             json()
         }

@@ -18,14 +18,14 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import utils.buildFullPhotoUrl
 
 fun Route.profileRoutes() {
-    get("/profile/{id}") {
-        val id = call.parameters["id"]?.toIntOrNull()
-        if (id == null) {
-            call.respond(ErrorResponse(message = "Invalid Id"))
+    get("/profile/{username}") {
+        val username = call.parameters["username"]
+        if (username == null) {
+            call.respond(ErrorResponse(message = "Invalid username"))
             return@get
         }
 
-        val user = UserDao.findById(id)
+        val user = UserDao.findByUsername(username)
         if (user == null) {
             call.respond(ErrorResponse(message = "User not found"))
             return@get
@@ -45,8 +45,8 @@ fun Route.profileRoutes() {
         val friendsCount = transaction {
             FriendRequestTable
                 .select {
-                    (FriendRequestTable.fromUser eq id and (FriendRequestTable.status eq "accepted")) or
-                            (FriendRequestTable.toUser eq id and (FriendRequestTable.status eq "accepted"))
+                    (FriendRequestTable.fromUser eq user.id and (FriendRequestTable.status eq "accepted")) or
+                            (FriendRequestTable.toUser eq user.id and (FriendRequestTable.status eq "accepted"))
                 }
                 .count()
         }
@@ -64,14 +64,20 @@ fun Route.profileRoutes() {
         )
     }
 
-    get("/profile/{id}/posts") {
-        val userId = call.parameters["id"]?.toIntOrNull()
-        if (userId == null) {
-            call.respond(ErrorResponse(message = "Invalid id"))
+    get("/profile/{username}/posts") {
+        val username = call.parameters["username"]
+        if (username == null) {
+            call.respond(ErrorResponse(message = "Invalid username"))
             return@get
         }
 
-        val posts = PostDao.findByUserId(userId)
+        val user = UserDao.findByUsername(username)
+        if (user == null) {
+            call.respond(ErrorResponse(message = "User not found"))
+            return@get
+        }
+
+        val posts = PostDao.findByUserId(user.id)
 
         call.respond(OkResponse(response = buildJsonArray {
             posts.forEach { post ->

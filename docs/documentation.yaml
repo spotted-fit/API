@@ -212,15 +212,15 @@ paths:
                         text: { type: string }
                         createdAt: { type: integer }
 
-  /profile/{id}:
+  /profile/{username}:
     get:
       summary: Get user profile
       parameters:
         - in: path
-          name: id
+          name: username
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: Profile retrieval result
@@ -252,15 +252,15 @@ paths:
                             likes: { type: integer }
                             isLikedByMe: { type: boolean }
 
-  /profile/{id}/posts:
+  /profile/{username}/posts:
     get:
       summary: Get posts of a specific user
       parameters:
         - in: path
-          name: id
+          name: username
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: User posts retrieval result
