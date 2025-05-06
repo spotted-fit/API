@@ -43,9 +43,9 @@ fun Route.authRoutes() {
             value    = token,
             maxAge   = 365L * 24 * 60 * 60,              // 1 year
             path     = "/",
-            secure   = false,
+            secure   = true,
             httpOnly = true,
-            extensions = mapOf("SameSite" to "Lax")
+            extensions = mapOf("SameSite" to "None")
         )
 
         call.respond(OkResponse(response = buildJsonObject { put("token", token) }))
@@ -84,9 +84,9 @@ fun Route.authRoutes() {
             value    = token,
             maxAge   = 365L * 24 * 60 * 60,              // 1 year
             path     = "/",
-            secure   = false,
+            secure   = true,
             httpOnly = true,
-            extensions = mapOf("SameSite" to "Lax")
+            extensions = mapOf("SameSite" to "None")
         )
 
         call.respond(OkResponse(response = buildJsonObject { put("token", token) }))
