@@ -77,7 +77,7 @@ fun Route.profileRoutes() {
             return@get
         }
 
-        val posts = PostDao.findByUserId(user.id)
+        val posts = PostDao.findByUserId(user.id).reversed()
 
         call.respond(OkResponse(response = buildJsonArray {
             posts.forEach { post ->
