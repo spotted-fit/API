@@ -35,6 +35,7 @@ fun Route.feedRoutes() {
                     emoji = post.emoji,
                     createdAt = post.createdAt,
                     likes = likesCount,
+                    timer = post.timer,
                     isLikedByMe = isLiked,
                     comments = comments
                 )

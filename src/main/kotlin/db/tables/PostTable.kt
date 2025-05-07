@@ -8,6 +8,7 @@ object PostTable : IntIdTable("posts") {
     val photo1 = reference("photo1_id", PhotoTable, onDelete = ReferenceOption.CASCADE)
     val photo2 = reference("photo2_id", PhotoTable, onDelete = ReferenceOption.CASCADE)
     val text = text("text").nullable()
+    val timer = integer("timer")
     val emoji = varchar("emoji", 10).nullable()
     val createdAt = long("created_at")
 }

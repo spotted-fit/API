@@ -13,6 +13,7 @@ data class GetPostResponse (
     val emoji: String?,
     val createdAt: Long,
     val likes: Int,
+    val timer: Int,
     val isLikedByMe: Boolean,
     val comments: List<Comment>
 )

@@ -28,6 +28,7 @@ object PostDao {
                     username = row[UserTable.username],
                     photo1 = row[p1[PhotoTable.path]],
                     photo2 = row[p2[PhotoTable.path]],
+                    timer = row[PostTable.timer],
                     text = row[PostTable.text],
                     emoji = row[PostTable.emoji],
                     createdAt = row[PostTable.createdAt]
@@ -54,6 +55,7 @@ object PostDao {
                     photo2 = row[p2[PhotoTable.path]],
                     text = row[PostTable.text],
                     emoji = row[PostTable.emoji],
+                    timer = row[PostTable.timer],
                     createdAt = row[PostTable.createdAt]
                 )
             }
@@ -84,6 +86,7 @@ object PostDao {
                     photo2 = row[p2[PhotoTable.path]],
                     text = row[PostTable.text],
                     emoji = row[PostTable.emoji],
+                    timer = row[PostTable.timer],
                     createdAt = row[PostTable.createdAt]
                 )
             }
@@ -108,6 +111,7 @@ object PostDao {
                     photo2 = row[p2[PhotoTable.path]],
                     text = row[PostTable.text],
                     emoji = row[PostTable.emoji],
+                    timer = row[PostTable.timer],
                     createdAt = row[PostTable.createdAt]
                 )
             }
@@ -117,7 +121,7 @@ object PostDao {
         userId: Int,
         photo1Id: Int,
         photo2Id: Int,
-        duration: Int,
+        timer: Int,
         text: String?,
         emoji: String?
     ): Int = dbQuery {
@@ -126,6 +130,7 @@ object PostDao {
             it[PostTable.photo1] = EntityID(photo1Id, PhotoTable)
             it[PostTable.photo2] = EntityID(photo2Id, PhotoTable)
             it[PostTable.text] = text
+            it[PostTable.timer] = timer
             it[PostTable.emoji] = emoji
             it[PostTable.createdAt] = System.currentTimeMillis()
         }.value

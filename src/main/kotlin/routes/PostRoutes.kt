@@ -35,7 +35,7 @@ fun Route.postRoutes() {
 
             var photo1Bytes: ByteArray? = null
             var photo2Bytes: ByteArray? = null
-            var duration: Int = 0
+            var timer = 0
             var text: String? = null
             var emoji: String? = null
 
@@ -45,7 +45,7 @@ fun Route.postRoutes() {
                         when (part.name) {
                             "text" -> text = part.value
                             "emoji" -> emoji = part.value
-                            "duration" -> duration = part.value.toInt()
+                            "timer" -> timer = part.value.toInt()
                         }
                     }
                     is PartData.FileItem -> {
@@ -82,7 +82,7 @@ fun Route.postRoutes() {
                 userId = userId,
                 photo1Id = photo1Id,
                 photo2Id = photo2Id,
-                duration = duration,
+                timer = timer,
                 text = text,
                 emoji = emoji
             )
@@ -116,6 +116,7 @@ fun Route.postRoutes() {
                             createdAt = post.createdAt,
                             likes = likesCount,
                             isLikedByMe = isLiked,
+                            timer = post.timer,
                             comments = comments
                         )
                     )

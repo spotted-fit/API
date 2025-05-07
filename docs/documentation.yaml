@@ -72,10 +72,10 @@ paths:
               properties:
                 photo1: { type: string, format: binary }
                 photo2: { type: string, format: binary }
-                duration: {type: integer}
+                timer: { type: integer}
                 emoji: { type: string }
                 description: { type: string }
-              required: [photo1, photo2, duration]
+              required: [ photo1, photo2, timer ]
       responses:
         '200':
           description: Post creation result
@@ -109,7 +109,7 @@ paths:
                       userId: { type: integer }
                       photo1: { type: string }
                       photo2: { type: string }
-                      duration: {type: integer}
+                      timer: {type: integer}
                       text: { type: string, nullable: true }
                       emoji: { type: string, nullable: true }
                       createdAt: { type: integer }
@@ -245,7 +245,7 @@ paths:
                             id: { type: integer }
                             photo1: { type: string }
                             photo2: { type: string, nullable: true }
-                            duration: {type: integer }
+                            timer: {type: integer }
                             text: { type: string, nullable: true }
                             emoji: { type: string, nullable: true }
                             createdAt: { type: integer }
@@ -278,7 +278,7 @@ paths:
                         postId: { type: integer }
                         photo1: { type: string }
                         photo2: { type: string }
-                        duration: {type: integer }
+                        timer: {type: integer }
                         text: { type: string }
                         emoji: { type: string }
                         createdAt: { type: string, format: date-time }
@@ -425,7 +425,7 @@ paths:
                         postId: { type: integer }
                         photo1: { type: string }
                         photo2: { type: string }
-                        duration: {type: integer }
+                        timer: {type: integer }
                         text: { type: string }
                         emoji: { type: string }
                         createdAt: { type: string, format: date-time }

@@ -9,6 +9,7 @@ data class Post(
     val username: String,
     val photo1: String,
     val photo2: String,
+    val timer: Int,
     val text: String?,
     val emoji: String?,
     val createdAt: Long
