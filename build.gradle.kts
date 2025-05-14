@@ -19,6 +19,9 @@ val bcryptVersion = "0.4"
 val logbackVersion = "1.5.13"
 
 dependencies {
+    // Firebase
+    implementation("com.google.firebase:firebase-admin:9.4.3")
+
     // Ktor Core
     implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")

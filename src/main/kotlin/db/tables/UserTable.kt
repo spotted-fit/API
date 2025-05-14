@@ -7,4 +7,5 @@ object UserTable : IntIdTable("users") {
     val passwordHash = varchar("password_hash", 255)
     val username = varchar("username", 30).uniqueIndex()
     val avatarPath = varchar("avatar_path", 512).nullable()
+    val firebaseToken = varchar("firebase_token", 512).nullable()
 }

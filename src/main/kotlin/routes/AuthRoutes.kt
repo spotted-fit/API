@@ -34,7 +34,7 @@ fun Route.authRoutes() {
             return@post
         }
         val hashed = BCrypt.hashpw(body.password, BCrypt.gensalt())
-        val user = UserDao.create(body.email, hashed, body.username)
+        val user = UserDao.create(body.email, hashed, body.username, body.firebaseToken)
         val token = JwtService.generateToken(user.id)
         call.respond(OkResponse(response = buildJsonObject { put("token", token) }))
     }
@@ -64,6 +64,10 @@ fun Route.authRoutes() {
                 call.respond(ErrorResponse(message = "Email and username of the account do not match"))
                 return@post
             }
+        }
+
+        if (body.firebaseToken != null) {
+            UserDao.updateFirebaseToken(user.id, body.firebaseToken)
         }
 
         val token = JwtService.generateToken(user.id)
