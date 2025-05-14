@@ -3,10 +3,16 @@ package routes
 import db.dao.UserDao
 import db.dao.PostDao
 import db.tables.FriendRequestTable
+import io.ktor.http.*
+import io.ktor.http.content.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.*
+import models.AvatarResponse
 import models.ErrorResponse
 import models.OkResponse
 import models.ProfilePost
@@ -15,7 +21,12 @@ import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import storage.S3Config
+import storage.S3Uploader
+import utils.AuthExtensions.getUserId
+import utils.ImageProcessor
 import utils.buildFullPhotoUrl
+import java.util.*
 
 fun Route.profileRoutes() {
     get("/profile/{username}") {
@@ -56,7 +67,7 @@ fun Route.profileRoutes() {
                 response = Json.encodeToJsonElement(ProfileResponse(
                     id = user.id,
                     username = user.username,
-                    avatar = user.avatarPath,
+                    avatar = user.avatarPath?.let { buildFullPhotoUrl(it) },
                     friendsCount = friendsCount.toInt(),
                     posts = posts
                 ))
@@ -93,4 +104,115 @@ fun Route.profileRoutes() {
         }))
     }
 
+    authenticate {
+        post("/profile/avatar") {
+            // Get user ID from JWT token
+            val userId = call.getUserId()
+            if (userId == null) {
+                call.respond(HttpStatusCode.Unauthorized, ErrorResponse(message = "Authentication required"))
+                return@post
+            }
+
+            // Ensure user exists
+            val user = UserDao.findById(userId)
+            if (user == null) {
+                call.respond(HttpStatusCode.Unauthorized, ErrorResponse(message = "User not found"))
+                return@post
+            }
+
+            // Process multipart data
+            var avatarBytes: ByteArray? = null
+            var fileExtension = "jpg"
+
+            // Use suspendable function to process the multipart data
+            try {
+                call.receiveMultipart().forEachPart { part ->
+                    when (part) {
+                        is PartData.FileItem -> {
+                            if (part.name == "avatar") {
+                                avatarBytes = part.streamProvider().readBytes()
+                                
+                                // Extract the file extension from the original filename
+                                part.originalFileName?.let { originalFilename ->
+                                    val extension = originalFilename.substringAfterLast('.', "")
+                                    if (extension.isNotEmpty()) {
+                                        fileExtension = extension.lowercase()
+                                    }
+                                }
+                            }
+                        }
+                        else -> {} // Ignore other parts
+                    }
+                    part.dispose()
+                }
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.BadRequest, ErrorResponse(message = "Failed to process upload: ${e.message}"))
+                return@post
+            }
+
+            // Validate image data
+            if (avatarBytes == null) {
+                call.respond(HttpStatusCode.BadRequest, ErrorResponse(message = "No avatar image provided"))
+                return@post
+            }
+
+            // Validate image format
+            if (!ImageProcessor.isValidImage(avatarBytes!!)) {
+                call.respond(
+                    HttpStatusCode.BadRequest, 
+                    ErrorResponse(message = "Invalid image format. Please upload a JPEG or PNG file.")
+                )
+                return@post
+            }
+
+            // Process image (resize, compress)
+            try {
+                // Determine format from actual image data if possible
+                val detectedFormat = ImageProcessor.getImageFormat(avatarBytes!!) ?: when (fileExtension) {
+                    "png" -> "png"
+                    else -> "jpg"
+                }
+                
+                // Process the image
+                val processedImage = ImageProcessor.process(
+                    imageBytes = avatarBytes!!, 
+                    targetWidth = 400, 
+                    targetHeight = 400,
+                    format = detectedFormat
+                )
+                
+                // Generate a unique filename
+                val filename = "avatar_${userId}_${UUID.randomUUID()}.${detectedFormat}"
+                
+                // Upload to S3
+                val s3Uploader = S3Uploader(S3Config.s3Client, S3Config.bucketName)
+                val avatarPath = s3Uploader.uploadImage(processedImage, filename)
+                
+                // Update the user's avatar path in the database
+                val updated = UserDao.updateAvatar(userId, avatarPath)
+                if (!updated) {
+                    call.respond(
+                        HttpStatusCode.InternalServerError, 
+                        ErrorResponse(message = "Failed to update avatar in database")
+                    )
+                    return@post
+                }
+                
+                // Return success response with the avatar URL
+                call.respond(
+                    OkResponse(
+                        response = Json.encodeToJsonElement(
+                            AvatarResponse(avatarUrl = buildFullPhotoUrl(avatarPath))
+                        )
+                    )
+                )
+                
+            } catch (e: Exception) {
+                call.respond(
+                    HttpStatusCode.InternalServerError, 
+                    ErrorResponse(message = "Failed to process the image: ${e.message}")
+                )
+            }
+        }
+    }
 }

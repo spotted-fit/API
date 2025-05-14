@@ -44,6 +44,12 @@ object UserDao {
         User(insertedId, email, passwordHash, username, avatarPath = null)
     }
 
+    suspend fun updateAvatar(userId: Int, avatarPath: String): Boolean = dbQuery {
+        val updatedRows = UserTable.update({ UserTable.id eq userId }) {
+            it[UserTable.avatarPath] = avatarPath
+        }
+        updatedRows > 0
+    }
 
     suspend fun searchByUsername(query: String): List<User> = dbQuery {
         UserTable
