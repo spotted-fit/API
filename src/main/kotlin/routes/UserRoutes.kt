@@ -10,6 +10,7 @@ import kotlinx.serialization.json.Json
 import models.ErrorResponse
 import models.OkResponse
 import models.UserPreview
+import utils.buildFullPhotoUrl
 import utils.userIdOrThrow
 
 fun Route.userRoutes() {
@@ -30,7 +31,7 @@ fun Route.userRoutes() {
                         UserPreview(
                             id = user.id,
                             username = user.username,
-                            avatar = user.avatarPath
+                            avatar =  buildFullPhotoUrl(user.avatarPath)
                         )
                     )
                 )
@@ -56,7 +57,7 @@ fun Route.userRoutes() {
                         UserPreview(
                             id = it.id,
                             username = it.username,
-                            avatar = it.avatarPath
+                            avatar = buildFullPhotoUrl(it.avatarPath)
                         )
                     }
                 )

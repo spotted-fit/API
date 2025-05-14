@@ -67,7 +67,7 @@ fun Route.profileRoutes() {
                 response = Json.encodeToJsonElement(ProfileResponse(
                     id = user.id,
                     username = user.username,
-                    avatar = user.avatarPath?.let { buildFullPhotoUrl(it) },
+                    avatar = buildFullPhotoUrl(user.avatarPath),
                     friendsCount = friendsCount.toInt(),
                     posts = posts
                 ))
