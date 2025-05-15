@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "1.9.0"
     kotlin("plugin.serialization") version "1.9.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
     application
 }
 
@@ -88,4 +89,22 @@ tasks.jar {
             "Main-Class" to "fit.spotted.api.MainKt"
         )
     }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(sourceSets.main.get().output)
+    dependsOn(configurations.runtimeClasspath)
+    from({
+        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+    })
+
+}
+
+tasks {
+    shadowJar {
+        archiveBaseName.set("spotted-api")
+        mergeServiceFiles()
+        manifest {
+            attributes(mapOf("Main-Class" to "fit.spotted.api.MainKt"))
+        }
+    }
+
 }
