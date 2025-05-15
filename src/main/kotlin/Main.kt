@@ -16,9 +16,11 @@ import models.ErrorResponse
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import routes.*
 import security.JwtService
+import utils.initializeFirebaseApp
 
 fun main() {
     DatabaseFactory.init()
+    initializeFirebaseApp()
 
     embeddedServer(
         Netty,

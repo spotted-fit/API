@@ -2,7 +2,7 @@ package models
 
 import kotlinx.serialization.Serializable
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class FriendRequestPreview(
     val requestId: Int,
     val fromId: Int,
@@ -18,6 +18,13 @@ data class FriendshipRequestCreate(
 data class FriendshipRequestAnswer(
     val requestId: Int,
     val accepted: Boolean
+)
+
+@Serializable
+data class PokeRequest(
+    val toUsername: String,
+    val title: String,
+    val body: String
 )
 
 @Serializable
