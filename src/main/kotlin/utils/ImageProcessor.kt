@@ -1,6 +1,5 @@
-package utils
+package fit.spotted.api.utils
 
-import java.awt.AlphaComposite
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
@@ -80,7 +79,7 @@ object ImageProcessor {
             val inputStream = ByteArrayInputStream(bytes)
             val image = ImageIO.read(inputStream)
             image != null
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             false
         }
     }
@@ -99,14 +98,14 @@ object ImageProcessor {
                     val stream = ImageIO.createImageInputStream(inputStream)
                     reader.input = stream
                     return reader.formatName.lowercase()
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     // Try next reader
                     inputStream.reset()
                 } finally {
                     reader.dispose()
                 }
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // Do nothing
         }
         

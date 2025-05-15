@@ -1,6 +1,7 @@
-package routes
+package fit.spotted.api.routes
 
-import db.dao.UserDao
+import fit.spotted.api.db.dao.UserDao
+import fit.spotted.api.models.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
@@ -8,9 +9,8 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
-import models.*
 import org.mindrot.jbcrypt.BCrypt
-import security.JwtService
+import fit.spotted.api.security.JwtService
 
 fun Route.authRoutes() {
     post("/register") {

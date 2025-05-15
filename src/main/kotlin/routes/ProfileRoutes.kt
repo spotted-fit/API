@@ -1,31 +1,26 @@
 package routes
 
-import db.dao.UserDao
-import db.dao.PostDao
-import db.tables.FriendRequestTable
+import fit.spotted.api.db.dao.UserDao
+import fit.spotted.api.db.dao.PostDao
+import fit.spotted.api.db.tables.FriendRequestTable
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.*
-import models.AvatarResponse
-import models.ErrorResponse
-import models.OkResponse
-import models.ProfilePost
-import models.ProfileResponse
+import fit.spotted.api.models.*
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
-import storage.S3Config
-import storage.S3Uploader
-import utils.AuthExtensions.getUserId
-import utils.ImageProcessor
-import utils.buildFullPhotoUrl
+import fit.spotted.api.storage.S3Config
+import fit.spotted.api.storage.S3Uploader
+import fit.spotted.api.utils.AuthExtensions.getUserId
+import fit.spotted.api.utils.ImageProcessor
+import fit.spotted.api.utils.buildFullPhotoUrl
 import java.util.*
 
 fun Route.profileRoutes() {

@@ -1,17 +1,17 @@
 package routes
 
-import db.dao.UserDao
+import fit.spotted.api.db.dao.UserDao
 import io.ktor.server.application.*
 import io.ktor.server.auth.authenticate
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
-import models.ErrorResponse
-import models.OkResponse
-import models.UserPreview
-import utils.buildFullPhotoUrl
-import utils.userIdOrThrow
+import fit.spotted.api.models.ErrorResponse
+import fit.spotted.api.models.OkResponse
+import fit.spotted.api.models.UserPreview
+import fit.spotted.api.utils.buildFullPhotoUrl
+import fit.spotted.api.utils.userIdOrThrow
 
 fun Route.userRoutes() {
     authenticate {

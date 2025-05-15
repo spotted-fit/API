@@ -1,7 +1,7 @@
-package db.dao
+package fit.spotted.api.db.dao
 
-import db.DatabaseFactory.dbQuery
-import db.tables.LikeTable
+import fit.spotted.api.db.DatabaseFactory.dbQuery
+import fit.spotted.api.db.tables.LikeTable
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere

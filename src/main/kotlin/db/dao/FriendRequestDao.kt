@@ -1,11 +1,11 @@
-package db.dao
+package fit.spotted.api.db.dao
 
-import db.DatabaseFactory.dbQuery
-import db.tables.FriendRequestTable
-import db.tables.UserTable
-import models.FriendRequestPreview
-import models.FriendshipRequestAnswer
-import models.UserShortDto
+import fit.spotted.api.db.DatabaseFactory.dbQuery
+import fit.spotted.api.db.tables.FriendRequestTable
+import fit.spotted.api.db.tables.UserTable
+import fit.spotted.api.models.FriendRequestPreview
+import fit.spotted.api.models.FriendshipRequestAnswer
+import fit.spotted.api.models.UserShortDto
 import org.jetbrains.exposed.sql.*
 import java.lang.IllegalStateException
 import java.time.Instant

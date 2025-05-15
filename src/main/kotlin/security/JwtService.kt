@@ -1,4 +1,4 @@
-package security
+package fit.spotted.api.security
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier

@@ -1,4 +1,6 @@
-import db.DatabaseFactory
+package fit.spotted.api
+
+import fit.spotted.api.db.DatabaseFactory
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -12,11 +14,12 @@ import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import models.ErrorResponse
+import fit.spotted.api.models.ErrorResponse
+import fit.spotted.api.routes.authRoutes
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import routes.*
-import security.JwtService
-import utils.initializeFirebaseApp
+import fit.spotted.api.security.JwtService
+import fit.spotted.api.utils.initializeFirebaseApp
 
 fun main() {
     DatabaseFactory.init()

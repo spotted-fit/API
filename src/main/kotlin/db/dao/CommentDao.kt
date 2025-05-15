@@ -1,9 +1,9 @@
-package db.dao
+package fit.spotted.api.db.dao
 
-import db.DatabaseFactory.dbQuery
-import db.tables.CommentTable
-import db.tables.UserTable
-import models.Comment
+import fit.spotted.api.db.DatabaseFactory.dbQuery
+import fit.spotted.api.db.tables.CommentTable
+import fit.spotted.api.db.tables.UserTable
+import fit.spotted.api.models.Comment
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select

@@ -1,4 +1,4 @@
-package db.tables
+package fit.spotted.api.db.tables
 
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ReferenceOption

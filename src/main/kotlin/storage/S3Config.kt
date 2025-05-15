@@ -1,4 +1,4 @@
-package storage
+package fit.spotted.api.storage
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider

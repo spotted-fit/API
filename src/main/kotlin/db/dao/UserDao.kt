@@ -1,7 +1,7 @@
-package db.dao
+package fit.spotted.api.db.dao
 
-import db.DatabaseFactory.dbQuery
-import db.tables.UserTable
+import fit.spotted.api.db.DatabaseFactory.dbQuery
+import fit.spotted.api.db.tables.UserTable
 import org.jetbrains.exposed.sql.*
 
 data class User(

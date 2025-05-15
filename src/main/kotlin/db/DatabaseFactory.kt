@@ -1,6 +1,6 @@
-package db
+package fit.spotted.api.db
 
-import db.tables.*
+import fit.spotted.api.db.tables.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 

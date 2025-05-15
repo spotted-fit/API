@@ -1,4 +1,4 @@
-package storage
+package fit.spotted.api.storage
 
 import software.amazon.awssdk.core.sync.RequestBody
 import software.amazon.awssdk.services.s3.S3Client

@@ -1,4 +1,4 @@
-package utils
+package fit.spotted.api.utils
 
 import java.util.UUID
 

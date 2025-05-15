@@ -4,6 +4,8 @@ plugins {
     application
 }
 
+group = "fit.spotted.api"
+version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -65,22 +67,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("MainKt")
-}
-
-tasks.register<Jar>("buildFatJar") {
-    archiveBaseName.set("API")
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    manifest {
-        attributes["Main-Class"] = "MainKt" // Entry point of app
-    }
-    from(sourceSets.main.get().output)
-
-    // Include all dependencies
-    dependsOn(configurations.runtimeClasspath)
-    from({
-        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
-    })
+    mainClass.set("fit.spotted.api.MainKt")
 }
 
 java {
@@ -98,7 +85,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 tasks.jar {
     manifest {
         attributes(
-            "Main-Class" to "MainKt"
+            "Main-Class" to "fit.spotted.api.MainKt"
         )
     }
 }

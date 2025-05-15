@@ -1,8 +1,8 @@
 package routes
 
 import com.google.firebase.messaging.FirebaseMessaging
-import db.dao.FriendRequestDao
-import db.dao.UserDao
+import fit.spotted.api.db.dao.FriendRequestDao
+import fit.spotted.api.db.dao.UserDao
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
@@ -12,9 +12,9 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
-import models.*
-import utils.createFirebaseNotification
-import utils.userIdOrThrow
+import fit.spotted.api.models.*
+import fit.spotted.api.utils.createFirebaseNotification
+import fit.spotted.api.utils.userIdOrThrow
 
 fun Route.friendshipRoutes() {
     authenticate {

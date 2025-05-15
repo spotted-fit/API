@@ -1,10 +1,10 @@
-package db.dao
+package fit.spotted.api.db.dao
 
-import db.DatabaseFactory.dbQuery
-import db.tables.PhotoTable
-import db.tables.PostTable
-import db.tables.UserTable
-import models.Post
+import fit.spotted.api.db.DatabaseFactory.dbQuery
+import fit.spotted.api.db.tables.PhotoTable
+import fit.spotted.api.db.tables.PostTable
+import fit.spotted.api.db.tables.UserTable
+import fit.spotted.api.models.Post
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq

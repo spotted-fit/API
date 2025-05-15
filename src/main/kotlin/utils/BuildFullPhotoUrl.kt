@@ -1,6 +1,6 @@
-package utils
+package fit.spotted.api.utils
 
-import storage.S3Config
+import fit.spotted.api.storage.S3Config
 
 fun buildFullPhotoUrl(path: String?): String {
     if (path.isNullOrEmpty()) return ""
