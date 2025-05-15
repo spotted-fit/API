@@ -9,11 +9,6 @@ object AuthExtensions {
         val principal = this.principal<JWTPrincipal>() ?: return null
         return principal.payload.getClaim("userId").asInt()
     }
-
-    fun ApplicationCall.getUsername(): String? {
-        val principal = this.principal<JWTPrincipal>() ?: return null
-        return principal.payload.getClaim("username").asString()
-    }
 }
 
 suspend fun ApplicationCall.userIdOrThrow(): Int {

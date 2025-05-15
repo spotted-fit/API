@@ -14,7 +14,6 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import fit.spotted.api.models.*
 import fit.spotted.api.utils.AuthExtensions.getUserId
-import fit.spotted.api.utils.AuthExtensions.getUsername
 import fit.spotted.api.utils.createFirebaseNotification
 import fit.spotted.api.utils.userIdOrThrow
 
@@ -24,7 +23,8 @@ fun Route.friendshipRoutes() {
 
             post("/poke") {
                 val request = call.receive<PokeRequest>()
-                val senderUsername = call.getUsername()
+                val senderId = call.getUserId() ?: throw IllegalArgumentException("User not logged in")
+                val sender = UserDao.findById(senderId) ?: throw IllegalArgumentException("User not found")
                 val recipient = UserDao.findByUsername(request.toUsername)
                     ?: throw IllegalArgumentException("User with username ${request.toUsername} not found")
 
@@ -32,7 +32,7 @@ fun Route.friendshipRoutes() {
                     ?: throw IllegalArgumentException("User ${request.toUsername} does not have a Firebase token")
 
                 val message = createFirebaseNotification(
-                    "$senderUsername spotted you!",
+                    "${sender.username} spotted you!",
                     "Go show them what activity you're up to today!",
                     recipientToken)
                 val response = FirebaseMessaging.getInstance().send(message)
