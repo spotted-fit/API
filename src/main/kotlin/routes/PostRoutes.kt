@@ -37,6 +37,7 @@ import com.madgag.gif.fmsware.AnimatedGifEncoder
 import java.awt.geom.RoundRectangle2D
 import java.awt.font.TextAttribute
 import java.text.AttributedString
+import kotlin.math.ceil
 
 fun Route.postRoutes() {
 
@@ -100,11 +101,14 @@ fun Route.postRoutes() {
             )
             
             // Update challenges progress - each post is considered a workout
-            // Use the timer as workout duration in minutes
+            // Convert timer from seconds to minutes for challenge progress
             if (timer > 0) {
+                // Convert seconds to minutes, rounding up to nearest minute
+                val durationInMinutes = ceil(timer / 60.0).toInt()
+                
                 ChallengeParticipantDao.updateActiveChallengesProgress(
                     userId = userId,
-                    workoutDurationMinutes = timer
+                    workoutDurationMinutes = durationInMinutes
                 )
             }
 
