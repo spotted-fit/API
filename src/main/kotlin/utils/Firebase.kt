@@ -12,7 +12,7 @@ import com.google.firebase.messaging.Message
 import com.google.firebase.messaging.Notification
 import com.google.firebase.messaging.WebpushConfig
 import com.google.firebase.messaging.WebpushNotification
-import fit.spotted.api.models.User
+import fit.spotted.api.db.dao.User
 import java.io.ByteArrayInputStream
 
 fun createFirebaseNotification(
@@ -24,8 +24,7 @@ fun createFirebaseNotification(
     channelId: String = "spotted_notifications",
     color: String = "#FF5722",
     sound: String = "default",
-    tag: String? = null,
-    priority: Int = 5  // High priority
+    tag: String? = null
 ): Message {
     // Create base notification
     val notificationBuilder = Notification.builder()
@@ -42,7 +41,6 @@ fun createFirebaseNotification(
         .setChannelId(channelId)
         .setColor(color)
         .setSound(sound)
-        .setPriority(priority)
         
     if (tag != null) {
         androidNotification.setTag(tag)
