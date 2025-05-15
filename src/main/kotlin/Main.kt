@@ -85,6 +85,7 @@ fun main() {
             userRoutes()
             friendshipRoutes()
             feedRoutes()
+            challengeRoutes()
 //            debugRoutes()
         }
     }.start(wait = true)

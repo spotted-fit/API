@@ -9,7 +9,7 @@ data class Post(
     val username: String,
     val photo1: String,
     val photo2: String,
-    val timer: Int,
+    val timer: Int,  // Workout duration in minutes
     val text: String?,
     val emoji: String?,
     val createdAt: Long

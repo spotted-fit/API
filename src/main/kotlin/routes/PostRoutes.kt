@@ -3,6 +3,7 @@ package routes
 import fit.spotted.api.db.dao.CommentDao
 import fit.spotted.api.db.dao.LikeDao
 import fit.spotted.api.db.dao.PostDao
+import fit.spotted.api.db.dao.ChallengeParticipantDao
 import fit.spotted.api.db.tables.PhotoTable
 import fit.spotted.api.db.tables.UserTable
 import io.ktor.http.*
@@ -97,6 +98,15 @@ fun Route.postRoutes() {
                 text = text,
                 emoji = emoji
             )
+            
+            // Update challenges progress - each post is considered a workout
+            // Use the timer as workout duration in minutes
+            if (timer > 0) {
+                ChallengeParticipantDao.updateActiveChallengesProgress(
+                    userId = userId,
+                    workoutDurationMinutes = timer
+                )
+            }
 
             call.respond(OkResponse(response = buildJsonObject { put("postId", postId) }))
         }

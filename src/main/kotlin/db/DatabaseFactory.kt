@@ -20,7 +20,11 @@ object DatabaseFactory {
                 PhotoTable,
                 PostTable,
                 LikeTable,
-                CommentTable
+                CommentTable,
+                ChallengeTable,
+                ChallengeParticipantTable,
+                ChallengeInviteTable,
+                AchievementTable
             )
         }
     }
