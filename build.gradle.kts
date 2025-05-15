@@ -56,6 +56,9 @@ dependencies {
 
     // Aws
     implementation("software.amazon.awssdk:s3:2.25.20")
+
+    // GIF
+    implementation("com.madgag:animated-gif-lib:1.4")
 }
 
 application {
