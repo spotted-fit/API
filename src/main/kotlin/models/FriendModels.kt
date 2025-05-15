@@ -22,9 +22,7 @@ data class FriendshipRequestAnswer(
 
 @Serializable
 data class PokeRequest(
-    val toUsername: String,
-    val title: String,
-    val body: String
+    val toUsername: String
 )
 
 @Serializable

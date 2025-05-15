@@ -61,7 +61,7 @@ object UserDao {
 
     suspend fun updateFirebaseToken(userId: Int, token: String?): Boolean = dbQuery {
         val updated = UserTable.update({ UserTable.id eq userId }) {
-            it[firebaseToken] = token
+            it[UserTable.firebaseToken] = token
         }
         updated > 0
     }
