@@ -91,7 +91,7 @@ fun Route.friendshipRoutes() {
                                 "friends",
                                 Json.encodeToJsonElement(
                                     ListSerializer(UserShortDto.serializer()),
-                                    friends
+                                    friends.toSet().distinct()
                                 )
                             )
                         }
